@@ -14,6 +14,7 @@ Authors
  * Abdel Heba 2020
 """
 
+import json
 import os
 import sys
 import torch
@@ -22,6 +23,8 @@ import speechbrain as sb
 from hyperpyyaml import load_hyperpyyaml
 from speechbrain.utils.distributed import run_on_main
 from speechbrain.utils.parameter_transfer import Pretrainer
+from torch.utils.data import DataLoader
+from tqdm.contrib import tqdm
 
 logger = logging.getLogger(__name__)
 
@@ -225,11 +228,38 @@ class ASR(sb.Brain):
                 "wav2vec_opt", self.wav2vec_optimizer
             )
             self.checkpointer.add_recoverable("adam_opt", self.adam_optimizer)
+            
+    def predict(self, test_dataset, test_loader_kwargs):
+        """
+        Produces predictions from new labeled json pointing at a wav file.
+        """
+        if not isinstance(test_dataset, torch.utils.data.DataLoader):
+            test_loader_kwargs["ckpt_prefix"] = None
+            test_set = self.make_dataloader(
+                test_dataset, sb.Stage.TEST, **test_loader_kwargs
+            )
 
-def dataio_prep(hparams, predict_only=False):
+        preds = []
+        true = []
+        for batch in test_set:
+            p_ctc, p_seq, wav_lens, hyps = self.compute_forward(batch, 
+                                                sb.Stage.TEST)
+            phns, phn_lens = batch.phn_encoded
+            preds.append(self.label_encoder.decode_ndim(hyps))
+            true.append(self.label_encoder.decode_ndim(phns))
+
+        return preds, true
+
+def dataio_prep(hparams, predict_only=False, new_json=None):
     """This function prepares the datasets to be used in the brain class.
     It also defines the data processing pipeline through user-defined functions."""
     data_folder = hparams["data_folder"]
+
+    if not new_json and "new_json" in hparams.keys():
+        test_json = hparams["new_json"]
+    else:
+        test_json = hparams["test_annotation"]
+
     # 1. Declarations:
     if not predict_only:
         train_data = sb.dataio.dataset.DynamicItemDataset.from_json(
@@ -264,7 +294,7 @@ def dataio_prep(hparams, predict_only=False):
         valid_data = valid_data.filtered_sorted(sort_key="duration")
 
     test_data = sb.dataio.dataset.DynamicItemDataset.from_json(
-        json_path=hparams["test_annotation"],
+        json_path=test_json,
         replacements={"data_root": data_folder},
     )
     test_data = test_data.filtered_sorted(sort_key="duration")
@@ -343,6 +373,7 @@ def dataio_prep(hparams, predict_only=False):
     if not predict_only:
         return train_data, valid_data, test_data, label_encoder
     else:
+        print("only predictions on test_data")
         return test_data, label_encoder
 
 
@@ -353,6 +384,13 @@ if __name__ == "__main__":
     # Load hyperparameters file with command-line overrides
     with open(hparams_file) as fin:
         hparams = load_hyperpyyaml(fin, overrides)
+
+    #get new json contents
+    with open(hparams["new_json"]) as f:
+        jcont = json.loads(f.read())
+
+    names = list(jcont.keys())
+    words = [x['wrd'] for x in jcont.values()]
 
     # Dataset prep (parsing TIMIT and annotation into csv files)
     from timit_prepare import prepare_timit  # noqa
@@ -382,7 +420,8 @@ if __name__ == "__main__":
 
     # Dataset IO prep: creating Dataset objects and proper encodings for phones
     # train_data, valid_data, test_data, label_encoder = dataio_prep(hparams, predict_only=False)
-    test_data, label_encoder = dataio_prep(hparams, predict_only=True)
+    test_data, label_encoder = dataio_prep(hparams, 
+          predict_only=True)
 
     # Trainer initialization
     asr_brain = ASR(
@@ -395,6 +434,27 @@ if __name__ == "__main__":
 
     ckpts = asr_brain.checkpointer.list_checkpoints()
     asr_brain.checkpointer.load_checkpoint(ckpts[0])
+
+    preds, true = asr_brain.predict(test_dataset=test_data,
+        test_loader_kwargs=hparams["test_dataloader_opts"])
+    
+    dict_struct = {"name": names,
+                  "words": words,
+                  "preds": preds[0],
+                  "true": true[0]}
+    
+    list_out = []
+
+    for i in range(len(dict_struct['name'])):
+        thisd = {}
+        for k in dict_struct.keys():
+            thisd[k] = dict_struct[k][i]
+            print(f"{k}: {dict_struct[k][i]}")
+        list_out.append(thisd)
+
+    # from pprint import pprint
+
+    # pprint(list_out)
 
     # # Initialization of the pre-trainer 
     # pretrain = Pretrainer(loadables={'model': asr_brain}, 
@@ -418,11 +478,8 @@ if __name__ == "__main__":
     # print(next(iter(test_data)))
 
     # # Test
-    asr_brain.evaluate(
-        test_data,
-        min_key="PER",
-        test_loader_kwargs=hparams["test_dataloader_opts"],
-    )
-
-    # pctc, pseq, wavlen = asr_brain.compute_forward( , 
-    #               sb.Stage.TEST)
+    # asr_brain.evaluate(
+    #     test_data,
+    #     min_key="PER",
+    #     test_loader_kwargs=hparams["test_dataloader_opts"],
+    # )
