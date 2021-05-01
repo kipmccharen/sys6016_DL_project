@@ -320,9 +320,15 @@ def dataio_prep(hparams, predict_only=False):
         "eos_label": hparams["eos_index"],
         "blank_label": hparams["blank_index"],
     }
+
+    if not predict_only:
+        fromdidatasets = [train_data]
+    else:
+        fromdidatasets = None
+
     label_encoder.load_or_create(
         path=lab_enc_file,
-        from_didatasets=[train_data],
+        from_didatasets=fromdidatasets,
         output_key="phn_list",
         special_labels=special_labels,
         sequence_input=True,
