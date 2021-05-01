@@ -21,6 +21,7 @@ import logging
 import speechbrain as sb
 from hyperpyyaml import load_hyperpyyaml
 from speechbrain.utils.distributed import run_on_main
+from speechbrain.utils.parameter_transfer import Pretrainer
 
 logger = logging.getLogger(__name__)
 
@@ -225,42 +226,42 @@ class ASR(sb.Brain):
             )
             self.checkpointer.add_recoverable("adam_opt", self.adam_optimizer)
 
-
-def dataio_prep(hparams):
+def dataio_prep(hparams, predict_only=False):
     """This function prepares the datasets to be used in the brain class.
     It also defines the data processing pipeline through user-defined functions."""
     data_folder = hparams["data_folder"]
     # 1. Declarations:
-    train_data = sb.dataio.dataset.DynamicItemDataset.from_json(
-        json_path=hparams["train_annotation"],
-        replacements={"data_root": data_folder},
-    )
-    if hparams["sorting"] == "ascending":
-        # we sort training data to speed up training and get better results.
-        train_data = train_data.filtered_sorted(sort_key="duration")
-        # when sorting do not shuffle in dataloader ! otherwise is pointless
-        hparams["train_dataloader_opts"]["shuffle"] = False
-
-    elif hparams["sorting"] == "descending":
-        train_data = train_data.filtered_sorted(
-            sort_key="duration", reverse=True
+    if not predict_only:
+        train_data = sb.dataio.dataset.DynamicItemDataset.from_json(
+            json_path=hparams["train_annotation"],
+            replacements={"data_root": data_folder},
         )
-        # when sorting do not shuffle in dataloader ! otherwise is pointless
-        hparams["train_dataloader_opts"]["shuffle"] = False
+        if hparams["sorting"] == "ascending":
+            # we sort training data to speed up training and get better results.
+            train_data = train_data.filtered_sorted(sort_key="duration")
+            # when sorting do not shuffle in dataloader ! otherwise is pointless
+            hparams["train_dataloader_opts"]["shuffle"] = False
 
-    elif hparams["sorting"] == "random":
-        pass
+        elif hparams["sorting"] == "descending":
+            train_data = train_data.filtered_sorted(
+                sort_key="duration", reverse=True
+            )
+            # when sorting do not shuffle in dataloader ! otherwise is pointless
+            hparams["train_dataloader_opts"]["shuffle"] = False
 
-    else:
-        raise NotImplementedError(
-            "sorting must be random, ascending or descending"
+        elif hparams["sorting"] == "random":
+            pass
+
+        else:
+            raise NotImplementedError(
+                "sorting must be random, ascending or descending"
+            )
+
+        valid_data = sb.dataio.dataset.DynamicItemDataset.from_json(
+            json_path=hparams["valid_annotation"],
+            replacements={"data_root": data_folder},
         )
-
-    valid_data = sb.dataio.dataset.DynamicItemDataset.from_json(
-        json_path=hparams["valid_annotation"],
-        replacements={"data_root": data_folder},
-    )
-    valid_data = valid_data.filtered_sorted(sort_key="duration")
+        valid_data = valid_data.filtered_sorted(sort_key="duration")
 
     test_data = sb.dataio.dataset.DynamicItemDataset.from_json(
         json_path=hparams["test_annotation"],
@@ -268,7 +269,10 @@ def dataio_prep(hparams):
     )
     test_data = test_data.filtered_sorted(sort_key="duration")
 
-    datasets = [train_data, valid_data, test_data]
+    if not predict_only:
+        datasets = [train_data, valid_data, test_data]
+    else:
+        datasets = [test_data]
     label_encoder = sb.dataio.encoder.CTCTextEncoder()
 
     # 2. Define audio pipeline:
@@ -292,7 +296,8 @@ def dataio_prep(hparams):
     def text_pipeline(phn):
         phn_list = phn.strip().split()
         yield phn_list
-        phn_encoded_list = label_encoder.encode_sequence(phn_list)
+        phn_encoded_list = label_encoder.encode_sequence(phn_list, 
+                allow_unk=True) #updated based on error messages
         yield phn_encoded_list
         phn_encoded = torch.LongTensor(phn_encoded_list)
         yield phn_encoded
@@ -328,8 +333,11 @@ def dataio_prep(hparams):
         datasets,
         ["id", "sig", "phn_encoded", "phn_encoded_eos", "phn_encoded_bos"],
     )
-
-    return train_data, valid_data, test_data, label_encoder
+    
+    if not predict_only:
+        return train_data, valid_data, test_data, label_encoder
+    else:
+        return test_data, label_encoder
 
 
 if __name__ == "__main__":
@@ -367,7 +375,8 @@ if __name__ == "__main__":
     )
 
     # Dataset IO prep: creating Dataset objects and proper encodings for phones
-    train_data, valid_data, test_data, label_encoder = dataio_prep(hparams)
+    # train_data, valid_data, test_data, label_encoder = dataio_prep(hparams, predict_only=False)
+    test_data, label_encoder = dataio_prep(hparams, predict_only=True)
 
     # Trainer initialization
     asr_brain = ASR(
@@ -378,18 +387,36 @@ if __name__ == "__main__":
     )
     asr_brain.label_encoder = label_encoder
 
-    # Training/validation loop
-    asr_brain.fit(
-        asr_brain.hparams.epoch_counter,
-        train_data,
-        valid_data,
-        train_loader_kwargs=hparams["train_dataloader_opts"],
-        valid_loader_kwargs=hparams["valid_dataloader_opts"],
-    )
+    ckpts = asr_brain.checkpointer.list_checkpoints()
+    asr_brain.checkpointer.load_checkpoint(ckpts[0])
 
-    # Test
+    # # Initialization of the pre-trainer 
+    # pretrain = Pretrainer(loadables={'model': asr_brain}, 
+    #       paths={'model': 'speechbrain/spkrec-ecapa-voxceleb/embedding_model.ckpt'})
+
+    # # We download the pretrained model from HuggingFace in this case
+    # pretrain.collect_files()
+    # pretrain.load_collected(device='gpu')
+
+    # # Training/validation loop
+    # asr_brain.fit(
+    #     asr_brain.hparams.epoch_counter,
+    #     train_data,
+    #     valid_data,
+    #     train_loader_kwargs=hparams["train_dataloader_opts"],
+    #     valid_loader_kwargs=hparams["valid_dataloader_opts"],
+    # )
+
+    # test_data = dataio_prep_one_json()
+    # print(test_data)
+    # print(next(iter(test_data)))
+
+    # # Test
     asr_brain.evaluate(
         test_data,
         min_key="PER",
         test_loader_kwargs=hparams["test_dataloader_opts"],
     )
+
+    # pctc, pseq, wavlen = asr_brain.compute_forward( , 
+    #               sb.Stage.TEST)
