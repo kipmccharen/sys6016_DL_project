@@ -1,0 +1,17 @@
+{"FKLH0_SX267.WAV": 
+    {"wav": "/content/data/TRAIN/DR8/FKLH0/SX267.WAV", 
+    "duration": 3.4048125, 
+    "spk_id": "FKLH0", 
+    "phn": "sil d r aa eh v r iy aw dx er l ay n f er s sil dh ih n f ih l ih n dh iy ih n sil t ih r ih er sil", 
+    "wrd": "draw every outer line first then fill in the interior", 
+    "ground_truth_phn_ends": "2052 2999 3509 5634 8273 9274 10276 11356 14520 15000 16710 17754 20120 21107 23320 26754 28671 30840 31400 32520 33800 35592 36595 37880 39466 40644 41070 41854 42898 43831 44099 46033 47000 48829 50334 51666 54400"
+    }, 
+"FKLH0_SI627.WAV":
+    {"wav": "/content/data/TRAIN/DR8/FKLH0/SI627.WAV", 
+    "duration": 2.77125, 
+    "spk_id": "FKLH0", 
+    "phn": "sil dh ih hh y uw m er ih v dh ih s ih sil ch uw w ey sh ih n sil k eh n sil b iy ih m ae sil jh ih n d sil", 
+    "wrd": "the humor of the situation can be imagined", 
+    "ground_truth_phn_ends": "1800 2440 3080 4600 4974 5723 6840 8313 8772 9303 9918 10615 13062 13930 14286 15990 16501 17336 19640 21400 22266 23080 23594 24898 25733 27007 27400 27800 29033 30200 31480 35049 35676 36927 38349 39973 40647 44320"
+    }
+  }
