@@ -392,18 +392,18 @@ if __name__ == "__main__":
     names = list(jcont.keys())
     words = [x['wrd'] for x in jcont.values()]
 
-    # Dataset prep (parsing TIMIT and annotation into csv files)
-    from timit_prepare import prepare_timit  # noqa
+    # # Dataset prep (parsing TIMIT and annotation into csv files)
+    # from timit_prepare import prepare_timit  # noqa
 
-    # Initialize ddp (useful only for multi-GPU DDP training)
-    sb.utils.distributed.ddp_init_group(run_opts)
+    # # Initialize ddp (useful only for multi-GPU DDP training)
+    # sb.utils.distributed.ddp_init_group(run_opts)
 
-    # Create experiment directory
-    sb.create_experiment_directory(
-        experiment_directory=hparams["output_folder"],
-        hyperparams_to_save=hparams_file,
-        overrides=overrides,
-    )
+    # # Create experiment directory
+    # sb.create_experiment_directory(
+    #     experiment_directory=hparams["output_folder"],
+    #     hyperparams_to_save=hparams_file,
+    #     overrides=overrides,
+    # )
 
     # # multi-gpu (ddp) save data preparation
     # run_on_main(
