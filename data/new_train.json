@@ -1,6 +1,6 @@
 {  "FKLH0_SX267.WAV": {
     "wavog": "/content/data/TRAIN/DR8/FKLH0/SX267.WAV",
-	"wav": "/content/sys6016_DL_project/SX267.WAV",
+	"wav": "/content/sys6016_DL_project/data/SX267.WAV",
     "duration": 3.4048125,
     "spk_id": "FKLH0",
     "phn": "sil d r aa eh v r iy aw dx er l ay n f er s sil dh ih n f ih l ih n dh iy ih n sil t ih r ih er sil",
@@ -9,7 +9,7 @@
   },
   "FKLH0_SI627.WAV": {
     "wavog": "/content/data/TRAIN/DR8/FKLH0/SI627.WAV",
-    "wav": "/content/sys6016_DL_project/SI627.WAV",
+    "wav": "/content/sys6016_DL_project/data/SI627.WAV",
     "duration": 2.77125,
     "spk_id": "FKLH0",
     "phn": "sil dh ih hh y uw m er ih v dh ih s ih sil ch uw w ey sh ih n sil k eh n sil b iy ih m ae sil jh ih n d sil",
@@ -18,7 +18,7 @@
   },
   "MWBT0_SX113.WAV": {
     "wavog": "/content/data/TEST/DR1/MWBT0/SX113.WAV",
-    "wav": "/content/sys6016_DL_project/SX113.WAV",
+    "wav": "/content/sys6016_DL_project/data/SX113.WAV",
     "duration": 3.328,
     "spk_id": "MWBT0",
     "phn": "sil ey m ah s sil k ih l ah ae sil d ah m eh n sil ih z sil g uh sil f aa y ih sil b ae sil k sil",
@@ -27,7 +27,7 @@
   },
   "MLNT0_SX102.WAV": {
     "wavog": "/content/data/TEST/DR3/MLNT0/SX102.WAV",
-    "wav": "/content/sys6016_DL_project/SX102.WAV",
+    "wav": "/content/sys6016_DL_project/data/SX102.WAV",
     "duration": 3.673625,
     "spk_id": "MLNT0",
     "phn": "sil s sil p eh sh l sil t ae s sil f aa r s ih z r eh s sil k y uw hh aa s sil t ih sil jh ih z f r ah m sil k ih sil n ae sil p er z sil",
@@ -36,7 +36,7 @@
   },
   "FMGD0_SX304.WAV": {
     "wavog": "/content/data/TEST/DR6/FMGD0/SX304.WAV",
-    "wav": "/content/sys6016_DL_project/SX304.WAV",
+    "wav": "/content/sys6016_DL_project/data/SX304.WAV",
     "duration": 2.7968125,
     "spk_id": "FMGD0",
     "phn": "sil ch iy sil s sil t aa sil k ih ng z r ah n dh ih f er s sil t ay m dh eh r w aa r n sil",
@@ -45,7 +45,7 @@
   },
   "MJLN0_SI1449.WAV": {
     "wavog": "/content/data/TEST/DR8/MJLN0/SI1449.WAV",
-    "wav": "/content/sys6016_DL_project/SI1449.WAV",
+    "wav": "/content/sys6016_DL_project/data/SI1449.WAV",
     "duration": 4.3328125,
     "spk_id": "MJLN0",
     "phn": "sil ch iy f ih n sil t er s sil t ih n r ey dx iy uh s sil t eh er l ah z ey sh ih n r ih z ay sil z ih n dh ih m ih l ih sil t eh r ih s er v er s ih z sil",
