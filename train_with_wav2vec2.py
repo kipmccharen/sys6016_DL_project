@@ -20,6 +20,7 @@ import sys
 import torch
 import logging
 import speechbrain as sb
+from collections import Counter
 from hyperpyyaml import load_hyperpyyaml
 from speechbrain.utils.distributed import run_on_main
 from speechbrain.utils.parameter_transfer import Pretrainer
@@ -376,6 +377,54 @@ def dataio_prep(hparams, predict_only=False, new_json=None):
         print("only predictions on test_data")
         return test_data, label_encoder
 
+def print_samples_with_results(json_dir, preds, true):
+
+    preds = [item for sublist in preds for item in sublist]
+    true = [item for sublist in true for item in sublist]
+
+    #get new json contents
+    with open(json_dir) as f:
+        jcont = json.loads(f.read())
+
+    names = list(jcont.keys())
+    words = [x['wrd'] for x in jcont.values()]
+    phones = [x["phn"].split(" ") for x in jcont.values()]
+
+    dict_struct = {"name": names,
+                  "words": words,
+                  "phones": phones}
+
+    def absolute_accuracy_2lists(phones, preds):
+        pn = dict(Counter(phones))
+        pd = dict(Counter(preds))
+
+        for k in pn.keys():
+          if k in pd.keys():
+              pd[k] = abs(pd[k] - pn[k])
+          else:
+              pd[k] = pn[k]
+
+        return 1 - (sum(pd.values()) / len(phones))
+
+    #print out filename, words, phones, and predictions
+    #for each given sample
+    for i in range(len(dict_struct['name'])):
+        thisd = {}
+        for k in dict_struct.keys():
+            curval = dict_struct[k][i]
+            print(f"{k}: {curval}")
+
+            if k == "phones":
+                for i, p in enumerate(preds):
+                    #only check if the first 8 syllables match
+                    if true[i][:8] == curval[:8]:
+                        print(f"preds: {p}")
+                        acc = absolute_accuracy_2lists(curval, p)
+                        # cks = list(zip(p, ))
+                        # acc = sum([int(str(x[0]) == str(x[1])) for x in cks])\
+                        #       / len(curval)
+                        print(f"phone accuracy: {acc:.2f}%")
+        print("\n")
 
 if __name__ == "__main__":
     # CLI:
@@ -385,12 +434,6 @@ if __name__ == "__main__":
     with open(hparams_file) as fin:
         hparams = load_hyperpyyaml(fin, overrides)
 
-    #get new json contents
-    with open(hparams["new_json"]) as f:
-        jcont = json.loads(f.read())
-
-    names = list(jcont.keys())
-    words = [x['wrd'] for x in jcont.values()]
 
     # # Dataset prep (parsing TIMIT and annotation into csv files)
     # from timit_prepare import prepare_timit  # noqa
@@ -438,19 +481,9 @@ if __name__ == "__main__":
     preds, true = asr_brain.predict(test_dataset=test_data,
         test_loader_kwargs=hparams["test_dataloader_opts"])
     
-    dict_struct = {"name": names,
-                  "words": words,
-                  "preds": preds[0],
-                  "true": true[0]}
-    
-    list_out = []
+    print_samples_with_results(hparams["new_json"], preds, true)
 
-    for i in range(len(dict_struct['name'])):
-        thisd = {}
-        for k in dict_struct.keys():
-            thisd[k] = dict_struct[k][i]
-            print(f"{k}: {dict_struct[k][i]}")
-        list_out.append(thisd)
+        # list_out.append(thisd)
 
     # from pprint import pprint
 

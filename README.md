@@ -22,10 +22,14 @@ python train.py train/train.yaml
 !git clone https://github.com/kipmccharen/sys6016_DL_project
 
 %cd ..
-!gdown --id '1EIfBmwiT0RF3-U81-Qu5K4J27N31BdB5'  ## speechbrain_s2s_wav2vec_ckpt.zip
+!gdown --id '1EIfBmwiT0RF3-U81-Qu5K4J27N31BdB5' 
+    ## --output /content/speechbrain_s2s_wav2vec_ckpt.zip
 !unzip speechbrain_s2s_wav2vec_ckpt.zip
 !rm speechbrain_s2s_wav2vec_ckpt.zip
 
 %cd /content/data/trainwav2vec/save/
+!gdown --id '1oZunuiwhMLfwtMeKAYJwr4DMjvE1LUIN'  --output label_encoder.txt
 
-!python sys6016_DL_project/train_with_wav2vec2.py sys6016_DL_project/hparams/train_with_wav2vec2.yaml --data_folder /content/data/ --output_folder /content/data/trainwav2vec/ --new_json /content/data/new_train.json
+%cd /content/
+
+!python sys6016_DL_project/train_with_wav2vec2.py sys6016_DL_project/hparams/train_with_wav2vec2.yaml --data_folder /content/data/ --output_folder /content/data/trainwav2vec/ --new_json /content/sys6016_DL_project/data/new_train.json
