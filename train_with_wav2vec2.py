@@ -405,18 +405,18 @@ if __name__ == "__main__":
         overrides=overrides,
     )
 
-    # multi-gpu (ddp) save data preparation
-    run_on_main(
-        prepare_timit,
-        kwargs={
-            "data_folder": hparams["data_folder"],
-            "save_json_train": hparams["train_annotation"],
-            "save_json_valid": hparams["valid_annotation"],
-            "save_json_test": hparams["test_annotation"],
-            "skip_prep": hparams["skip_prep"],
-            "uppercase": hparams["uppercase"],
-        },
-    )
+    # # multi-gpu (ddp) save data preparation
+    # run_on_main(
+    #     prepare_timit,
+    #     kwargs={
+    #         "data_folder": hparams["data_folder"],
+    #         "save_json_train": hparams["train_annotation"],
+    #         "save_json_valid": hparams["valid_annotation"],
+    #         "save_json_test": hparams["test_annotation"],
+    #         "skip_prep": hparams["skip_prep"],
+    #         "uppercase": hparams["uppercase"],
+    #     },
+    # )
 
     # Dataset IO prep: creating Dataset objects and proper encodings for phones
     # train_data, valid_data, test_data, label_encoder = dataio_prep(hparams, predict_only=False)

@@ -1,0 +1,55 @@
+{  "FKLH0_SX267.WAV": {
+    "wavog": "/content/data/TRAIN/DR8/FKLH0/SX267.WAV",
+	"wav": "/content/sys6016_DL_project/SX267.WAV",
+    "duration": 3.4048125,
+    "spk_id": "FKLH0",
+    "phn": "sil d r aa eh v r iy aw dx er l ay n f er s sil dh ih n f ih l ih n dh iy ih n sil t ih r ih er sil",
+    "wrd": "draw every outer line first then fill in the interior",
+    "ground_truth_phn_ends": "2052 2999 3509 5634 8273 9274 10276 11356 14520 15000 16710 17754 20120 21107 23320 26754 28671 30840 31400 32520 33800 35592 36595 37880 39466 40644 41070 41854 42898 43831 44099 46033 47000 48829 50334 51666 54400"
+  },
+  "FKLH0_SI627.WAV": {
+    "wavog": "/content/data/TRAIN/DR8/FKLH0/SI627.WAV",
+    "wav": "/content/sys6016_DL_project/SI627.WAV",
+    "duration": 2.77125,
+    "spk_id": "FKLH0",
+    "phn": "sil dh ih hh y uw m er ih v dh ih s ih sil ch uw w ey sh ih n sil k eh n sil b iy ih m ae sil jh ih n d sil",
+    "wrd": "the humor of the situation can be imagined",
+    "ground_truth_phn_ends": "1800 2440 3080 4600 4974 5723 6840 8313 8772 9303 9918 10615 13062 13930 14286 15990 16501 17336 19640 21400 22266 23080 23594 24898 25733 27007 27400 27800 29033 30200 31480 35049 35676 36927 38349 39973 40647 44320"
+  },
+  "MWBT0_SX113.WAV": {
+    "wavog": "/content/data/TEST/DR1/MWBT0/SX113.WAV",
+    "wav": "/content/sys6016_DL_project/SX113.WAV",
+    "duration": 3.328,
+    "spk_id": "MWBT0",
+    "phn": "sil ey m ah s sil k ih l ah ae sil d ah m eh n sil ih z sil g uh sil f aa y ih sil b ae sil k sil",
+    "wrd": "a muscular abdomen is good for your back",
+    "ground_truth_phn_ends": "2141 4360 5640 7430 9280 9640 10600 11488 12992 14723 18520 20247 20600 21320 22280 24920 25960 28440 30449 31880 32960 33450 35080 35800 38190 39480 40200 41640 42910 43300 48311 49779 50920 53200"
+  },
+  "MLNT0_SX102.WAV": {
+    "wavog": "/content/data/TEST/DR3/MLNT0/SX102.WAV",
+    "wav": "/content/sys6016_DL_project/SX102.WAV",
+    "duration": 3.673625,
+    "spk_id": "MLNT0",
+    "phn": "sil s sil p eh sh l sil t ae s sil f aa r s ih z r eh s sil k y uw hh aa s sil t ih sil jh ih z f r ah m sil k ih sil n ae sil p er z sil",
+    "wrd": "special task forces rescue hostages from kidnappers",
+    "ground_truth_phn_ends": "2214 3425 4960 5392 6440 8146 9480 10440 11862 14520 16083 17127 17720 18882 19880 21560 22520 23844 25400 26840 27989 28600 29911 30454 31321 32467 34548 35091 35560 36440 37080 37681 38760 39728 41566 43080 43487 44026 45133 45960 47240 47961 49278 49613 51480 52120 52679 54337 56667 58720"
+  },
+  "FMGD0_SX304.WAV": {
+    "wavog": "/content/data/TEST/DR6/FMGD0/SX304.WAV",
+    "wav": "/content/sys6016_DL_project/SX304.WAV",
+    "duration": 2.7968125,
+    "spk_id": "FMGD0",
+    "phn": "sil ch iy sil s sil t aa sil k ih ng z r ah n dh ih f er s sil t ay m dh eh r w aa r n sil",
+    "wrd": "cheap stockings run the first time they're worn",
+    "ground_truth_phn_ends": "2260 3801 5080 5630 7599 8140 8440 11154 12510 12917 13469 15520 17040 18255 19703 20940 21158 21620 23200 25023 26600 27120 27670 30637 32360 32670 33629 34841 37328 38845 39954 41833 44640"
+  },
+  "MJLN0_SI1449.WAV": {
+    "wavog": "/content/data/TEST/DR8/MJLN0/SI1449.WAV",
+    "wav": "/content/sys6016_DL_project/SI1449.WAV",
+    "duration": 4.3328125,
+    "spk_id": "MJLN0",
+    "phn": "sil ch iy f ih n sil t er s sil t ih n r ey dx iy uh s sil t eh er l ah z ey sh ih n r ih z ay sil z ih n dh ih m ih l ih sil t eh r ih s er v er s ih z sil",
+    "wrd": "chief interest in radiosterilization resides in the military services",
+    "ground_truth_phn_ends": "3590 4770 6320 7810 9312 9665 10170 11080 12440 13040 13520 13960 15039 15749 16919 18440 19040 19843 21000 22391 23080 23390 24563 25733 26861 28350 29210 32090 33880 35760 36845 38596 39640 40310 43800 44280 45160 45698 46440 46660 47173 48565 49333 50043 51080 51980 52580 53259 53928 54730 56840 58760 59720 60480 62490 64480 66730 69280"
+  }
+}
